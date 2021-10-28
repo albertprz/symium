@@ -1,7 +1,10 @@
 module Simplifier where
 
-import AlgebraicExpression
-import Data.Ratio
+import AlgebraicExpression ( AlgebraicExpression(..) )
+
+import Data.Ratio (denominator, numerator, approxRational)
+import GHC.Float (rationalToDouble)
+
 
 
 simplifySum :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
@@ -31,33 +34,34 @@ simplifySum (Sum x n1 @ (Const _)) n2 @ (Const _) =
 simplifySum x1 x2 = Sum x1 x2
 
 
-simplifyProd :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 
-simplifyProd (Const 1) x = x
-simplifyProd x (Const 1) = x
-simplifyProd (Const 0) _ = Const 0
-simplifyProd _ (Const 0) = Const 0
-simplifyProd (Const n1) (Const n2) = Const $ n1 * n2
+simplifyProduct :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 
-simplifyProd (Exp x1 y1) (Exp x2 y2)
+simplifyProduct (Const 1) x = x
+simplifyProduct x (Const 1) = x
+simplifyProduct (Const 0) _ = Const 0
+simplifyProduct _ (Const 0) = Const 0
+simplifyProduct (Const n1) (Const n2) = Const $ n1 * n2
+
+simplifyProduct (Exp x1 y1) (Exp x2 y2)
   | x1 == x2  = Exp x1 $ Sum y1 y2
 
-simplifyProd x1 (Exp x2 y2)
+simplifyProduct x1 (Exp x2 y2)
   | x1 == x2  = Exp x1 $ Sum y2 $ Const 1
 
-simplifyProd (Exp x1 y1) x2
+simplifyProduct (Exp x1 y1) x2
   | x1 == x2  = Exp x1 $ Sum y1 $ Const 1
 
-simplifyProd x1 x2
+simplifyProduct x1 x2
   | x1 == x2  = Exp x1 (Const 2)
 
-simplifyProd n1 @ (Const _) (Product x n2 @ (Const _)) =
+simplifyProduct n1 @ (Const _) (Product x n2 @ (Const _)) =
   Product x (Product n1 n2)
 
-simplifyProd (Product x n1 @ (Const _)) n2 @ (Const _) =
+simplifyProduct (Product x n1 @ (Const _)) n2 @ (Const _) =
   Product x (Product n1 n2)
 
-simplifyProd x1 x2 = Product x1 x2
+simplifyProduct x1 x2 = Product x1 x2
 
 
 
@@ -67,20 +71,10 @@ simplifyExp (Const 1) x = Const 1
 simplifyExp x (Const 1) = x
 simplifyExp (Const 0) _ = Const 0
 simplifyExp _ (Const 0) = Const 1
--- simplifyExp (Const n1) (Const n2) = Const $ n1 ** n2
 
-
-simplifyExp (Exp x1 y1) (Exp x2 y2)
-  | x1 == x2  = Exp x1 $ Product y1 y2
-
-simplifyExp x1 (Exp x2 y2)
-  | x1 == x2  = Exp x1 $ Sum y2 $ Const 1
-
-simplifyExp (Exp x1 y1) x2
-  | x1 == x2  = Exp x1 $ Sum y1 $ Const 1
-
-simplifyExp x1 x2
-  | x1 == x2  = Exp x1 (Const 2)
+simplifyExp (Const n1) (Const n2) = Const result  where
+  result      = approxRational 0.00001 $ toDecimal n1 ** toDecimal n2
+  toDecimal n = rationalToDouble (numerator n) (denominator n)
 
 simplifyExp n1 @ (Const _) (Exp x n2 @ (Const _)) =
   Exp x (Exp n1 n2)
@@ -92,3 +86,20 @@ simplifyExp (Exp x1 y1) x2 =
   Exp x1 (Product y1 x2)
 
 simplifyExp x1 x2 = Exp x1 x2
+
+
+
+simplifyOnce :: AlgebraicExpression -> AlgebraicExpression
+simplifyOnce x @ (Const _)   = x
+simplifyOnce x @ (Var _)     = x
+simplifyOnce (Sum x1 x2)     = simplifySum     (simplifyOnce x1) (simplifyOnce x2)
+simplifyOnce (Product x1 x2) = simplifyProduct (simplifyOnce x1) (simplifyOnce x2)
+simplifyOnce (Exp x1 x2)     = simplifyExp     (simplifyOnce x1) (simplifyOnce x2)
+simplifyOnce (Sin x)         = simplifyOnce x
+simplifyOnce (Cos x)         = simplifyOnce x
+simplifyOnce (Tan x)         = simplifyOnce x
+
+
+
+simplify :: AlgebraicExpression -> AlgebraicExpression
+simplify = (!! 10) . iterate simplifyOnce
