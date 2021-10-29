@@ -1,7 +1,9 @@
-module AlgebraicExpression (AlgebraicExpression(..), add, substract, multiply, divide, expn,
-                           sine, cosine, tangent, (|+|), (|-|), (|*|), (|/|), (|^|)) where
+module AlgebraicExpression (AlgebraicExpression(..),
+                            add, substract, multiply, divide, expn,
+                            squareRoot, sine, cosine, tangent,
+                            (|+|), (|-|), (|*|), (|/|), (|^|))  where
 
-import Data.Ratio (denominator, numerator)
+import Data.Ratio (denominator, numerator, (%))
 
 data AlgebraicExpression = Const Rational |
                            Var Char |
@@ -16,24 +18,27 @@ data AlgebraicExpression = Const Rational |
 
 instance Show AlgebraicExpression where
   show (Const n)       = showRational n
-  show (Var  ch)       = show ch
-  show (Sum x1 x2)     = showBinaryOp " + " x1 x2
-  show (Product x1 x2) = show x1 ++ show x2
-  show (Exp x1 x2)     = showBinaryOp "^" x1 x2
+  show (Var  ch)       = pure ch
+  show (Sum x1 x2)     = showBinaryOp " + " True x1 x2
+  show (Product x1 x2) = showProduct x1 x2
+  show (Exp x1 x2)     = showBinaryOp "^" False x1 x2
   show (Sin x)         = showUnaryOp  "sin" x
   show (Cos x)         = showUnaryOp  "cos" x
   show (Tan x)         = showUnaryOp  "tan" x
 
 
 showProduct :: AlgebraicExpression -> AlgebraicExpression -> String
-showProduct (Const n1) (Const n2) = show $ n1 * n2
-showProduct (Var x1) (Var x2)     = show x1 ++ show x2
-showProduct (Const n) (Var x)     = show n ++ show x
-showProduct (Var x) (Const n)     = show n ++ show x
-showProduct x1 x2                 = showBinaryOp " * " x1 x2
+showProduct (Const n1) (Const n2)     = show . Const $ n1 * n2
+showProduct x1 @ (Var _) x2 @ (Var _) = show x1 ++ show x2
+showProduct n @ (Const _) x @ (Var _) = show n ++ show x
+showProduct x @ (Var _) n @ (Const _) = show n ++ show x
+showProduct x1 x2                     = showBinaryOp " * " True x1 x2
 
-showBinaryOp :: (Show a1, Show a2) => String -> a1 -> a2 -> String
-showBinaryOp operator x1 x2 = "(" ++ show x1 ++ operator ++ show x2 ++ ")"
+showBinaryOp :: (Show a1, Show a2) => String -> Bool -> a1 -> a2 -> String
+showBinaryOp operator parens x1 x2 = (if parens then "(" else "") ++
+                                     show x1 ++ operator ++ show x2 ++
+                                     (if parens then ")" else "")
+
 
 showUnaryOp :: Show a => String -> a -> String
 showUnaryOp operator x = operator ++ "(" ++ show x ++ ")"
@@ -60,6 +65,9 @@ divide x1 x2 = Product x1 $ Exp x2 (Const $ -1)
 expn :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 expn = Exp
 
+squareRoot :: AlgebraicExpression -> AlgebraicExpression
+squareRoot x = expn x $ Const (1 % 2)
+
 
 sine :: AlgebraicExpression -> AlgebraicExpression
 sine = Sin
@@ -72,17 +80,22 @@ tangent = Tan
 
 
 
+infixl 6 |+|
 (|+|) :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 (|+|) = add
 
+infixl 6 |-|
 (|-|) :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 (|-|) = substract
 
+infixl 7 |*|
 (|*|) :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 (|*|) = multiply
 
+infixl 7 |/|
 (|/|) :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 (|/|) = divide
 
+infixr 8 |^|
 (|^|) :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 (|^|) = expn
