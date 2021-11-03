@@ -1,6 +1,7 @@
-module Simplifier where
+module AlgebraicExpression.Simplifier (simplify, simplifyOnce) where
 
-import AlgebraicExpression ( AlgebraicExpression(..) )
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
+import AlgebraicExpression.Sorter (sort, sortOnce)
 
 import Data.Ratio (denominator, numerator, approxRational)
 import GHC.Float (rationalToDouble)
@@ -8,7 +9,8 @@ import GHC.Float (rationalToDouble)
 
 
 simplify :: AlgebraicExpression -> AlgebraicExpression
-simplify = (!! 10) . iterate simplifyOnce
+simplify = sort . simplifyFn . sort  where
+  simplifyFn = (!! 10) . iterate (simplifyOnce . sortOnce)
 
 
 simplifyOnce :: AlgebraicExpression -> AlgebraicExpression
@@ -17,9 +19,9 @@ simplifyOnce x @ (Var _)     = x
 simplifyOnce (Sum x1 x2)     = simplifySum     (simplifyOnce x1) (simplifyOnce x2)
 simplifyOnce (Product x1 x2) = simplifyProduct (simplifyOnce x1) (simplifyOnce x2)
 simplifyOnce (Exp x1 x2)     = simplifyExp     (simplifyOnce x1) (simplifyOnce x2)
-simplifyOnce (Sin x)         = simplifyOnce x
-simplifyOnce (Cos x)         = simplifyOnce x
-simplifyOnce (Tan x)         = simplifyOnce x
+simplifyOnce (Sin x)         = Sin $ simplifyOnce x
+simplifyOnce (Cos x)         = Cos $ simplifyOnce x
+simplifyOnce (Tan x)         = Tan $ simplifyOnce x
 
 
 
