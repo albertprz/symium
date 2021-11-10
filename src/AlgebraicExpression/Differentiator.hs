@@ -1,11 +1,11 @@
-module AlgebraicExpression.Differentiator where
+module AlgebraicExpression.Differentiator(diff) where
 
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
 import AlgebraicExpression.Operations (sine, cosine, (|+|), (|*|), (|^|))
 
 
 
-diff :: [Char] -> AlgebraicExpression -> AlgebraicExpression
+diff :: String -> AlgebraicExpression -> AlgebraicExpression
 
 
 diff diffVars (Const _) = Const 0

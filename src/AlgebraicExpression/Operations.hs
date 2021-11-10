@@ -6,7 +6,6 @@ import Data.Ratio ((%))
 
 
 
-
 add :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 add = Sum
 

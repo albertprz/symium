@@ -1,4 +1,4 @@
-module AlgebraicExpression.Printer(show) where
+module AlgebraicExpression.Printer (show) where
 
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
 
@@ -68,6 +68,16 @@ showBinaryOp operator (x1, parens1) (x2, parens2) = operand x1 parens1 ++
                    | otherwise                        =  show x
 
 
+showUnaryOp :: Show a => String -> a -> String
+showUnaryOp operator x = operator ++ "(" ++ show x ++ ")"
+
+
+showRational :: Rational -> String
+showRational n
+  | denominator n == 1 = show $ numerator n
+  | otherwise          = show (numerator n) ++ "/" ++ show (denominator n)
+
+
 isSimpleExpr :: AlgebraicExpression -> Bool
 isSimpleExpr (Product x y) = isSimpleExpr x && isSimpleExpr y
 isSimpleExpr (Var _)       = True
@@ -80,13 +90,3 @@ elements (Product x y) = elements x ++ elements y
 elements x @ (Var _)   = [x]
 elements x @ (Const _) = [x]
 elements _             = []
-
-
-showUnaryOp :: Show a => String -> a -> String
-showUnaryOp operator x = operator ++ "(" ++ show x ++ ")"
-
-
-showRational :: Rational -> String
-showRational n
-  | denominator n == 1 = show $ numerator n
-  | otherwise          = show (numerator n) ++ "/" ++ show (denominator n)

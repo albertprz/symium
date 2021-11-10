@@ -10,8 +10,10 @@ sort = (!! 10) . iterate sortOnce
 sortOnce :: AlgebraicExpression -> AlgebraicExpression
 sortOnce x @ (Const _)   = x
 sortOnce x @ (Var _)     = x
-sortOnce (Sum x1 x2)     = uncurry Sum $ sortOp Addition (sortOnce x1) (sortOnce x2)
-sortOnce (Product x1 x2) = uncurry Product $ sortOp Multiplication (sortOnce x1) (sortOnce x2)
+sortOnce (Sum x1 x2)     = uncurry Sum $
+                           sortOp Addition (sortOnce x1) (sortOnce x2)
+sortOnce (Product x1 x2) = uncurry Product $
+                           sortOp Multiplication (sortOnce x1) (sortOnce x2)
 sortOnce (Exp x1 x2)     = Exp (sortOnce x1) (sortOnce x2)
 sortOnce (Sin x)         = Sin $ sortOnce x
 sortOnce (Cos x)         = Cos $ sortOnce x

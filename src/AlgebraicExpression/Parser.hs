@@ -1,11 +1,11 @@
 {-# LANGUAGE PostfixOperators #-}
 
-module AlgebraicExpression.Parser where
+module AlgebraicExpression.Parser (expression) where
 
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
 import AlgebraicExpression.Operations (expn, divide, multiply, substract, add)
 
-import Parser (Parser, parse, check)
+import Parser (Parser, parse, check, runParser)
 import ParserCombinators (IsMatch(..), within, maybeWithin, (<|>), (|*), (|+), (|?))
 import Parsers.Char (lower, dash, whiteSpace)
 import Parsers.String (spacing, withinParens)
@@ -18,8 +18,7 @@ import Data.List (foldl1')
 
 
 expression :: Parser AlgebraicExpression
-expression =  maybeWithin whiteSpace
-              (allOperations <|> element)
+expression = maybeWithin whiteSpace (allOperations <|> element)
 
 
 allOperations :: Parser AlgebraicExpression
