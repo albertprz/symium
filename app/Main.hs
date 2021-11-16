@@ -1,8 +1,6 @@
-{-# LANGUAGE PostfixOperators #-}
-
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
 import AlgebraicExpression.Parser (expression)
-import AlgebraicExpression.Printer (show)
+import AlgebraicExpression.Printer (showExpression)
 import AlgebraicExpression.Simplifier (simplify)
 import AlgebraicExpression.Differentiator (diff)
 import AlgebraicExpression.Evaluator (eval)
@@ -88,7 +86,7 @@ actionPrompt action opts = do writeToPrompt ["Input algebraic expression:",
                               expr <- runParser expression <$> getLine
                               putStrLn $ either showError showResult expr  where
 
-  showResult = ("Result:  " ++) . show . applyAction action opts
+  showResult = ("Result:  " ++) . showExpression . applyAction action opts
   showError = const $ parseErrorMessage "algebraic expression"
 
 

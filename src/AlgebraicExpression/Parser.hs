@@ -1,18 +1,16 @@
-{-# LANGUAGE PostfixOperators #-}
-
 module AlgebraicExpression.Parser (expression) where
 
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
 import AlgebraicExpression.Operations (expn, divide, multiply, substract, add)
 
-import Parser (Parser, parse, check, runParser)
-import ParserCombinators (IsMatch(..), within, maybeWithin, (<|>), (|*), (|+), (|?))
+import Parser (Parser, check)
+import ParserCombinators (IsMatch(..), maybeWithin, (<|>), (|*), (|?))
 import Parsers.Char (lower, dash, whiteSpace)
 import Parsers.String (spacing, withinParens)
 import Parsers.Number (double)
 
 import Data.Ratio (approxRational)
-import Data.Maybe (maybeToList, isJust)
+import Data.Maybe (maybeToList)
 import Data.List (foldl1')
 
 

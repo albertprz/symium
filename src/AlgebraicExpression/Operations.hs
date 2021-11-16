@@ -59,11 +59,11 @@ infixr 8 |^|
 
 
 mapExpr :: (AlgebraicExpression -> AlgebraicExpression) -> AlgebraicExpression -> AlgebraicExpression
-mapExpr f x @ (Const _) = f x
-mapExpr f x @ (Var _) = f x
-mapExpr f (Sum x1 x2) = f $ Sum (f x1) (f x2)
+mapExpr f x@(Const _)     = f x
+mapExpr f x@(Var _)       = f x
+mapExpr f (Sum x1 x2)     = f $ Sum (f x1) (f x2)
 mapExpr f (Product x1 x2) = f $ Product (f x1) (f x2)
-mapExpr f (Exp x1 x2) = f $ Exp (f x1) (f x2)
-mapExpr f (Sin x) = f . Sin $ f x
-mapExpr f (Cos x) = f . Cos $ f x
-mapExpr f (Tan x) = f . Tan $ f x
+mapExpr f (Exp x1 x2)     = f $ Exp (f x1) (f x2)
+mapExpr f (Sin x)         = f . Sin $ f x
+mapExpr f (Cos x)         = f . Cos $ f x
+mapExpr f (Tan x)         = f . Tan $ f x

@@ -9,8 +9,8 @@ import qualified Data.Map as Map
 
 
 substitute :: Map Char AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
-substitute varMap x @ (Var ch) = fromMaybe x $ Map.lookup ch varMap
-substitute varMap x            = x
+substitute varMap x@(Var ch) = fromMaybe x $ Map.lookup ch varMap
+substitute _      x          = x
 
 
 eval :: Map Char AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression

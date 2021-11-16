@@ -14,8 +14,8 @@ simplify = sort . simplifyFn . sort  where
 
 
 simplifyOnce :: AlgebraicExpression -> AlgebraicExpression
-simplifyOnce x @ (Const _)   = x
-simplifyOnce x @ (Var _)     = x
+simplifyOnce x@(Const _)     = x
+simplifyOnce x@(Var _)       = x
 simplifyOnce (Sum x1 x2)     = simplifySum     (simplifyOnce x1) (simplifyOnce x2)
 simplifyOnce (Product x1 x2) = simplifyProduct (simplifyOnce x1) (simplifyOnce x2)
 simplifyOnce (Exp x1 x2)     = simplifyExp     (simplifyOnce x1) (simplifyOnce x2)
@@ -50,30 +50,30 @@ simplifySum x1 x2
 
 
 -- Simplify sum of constants
-simplifySum n1 @ (Const _) (Sum n2 @ (Const _) x) =
+simplifySum n1@(Const _) (Sum n2@(Const _) x) =
   Sum x (Sum n1 n2)
 
-simplifySum n1 @ (Const _) (Sum x n2 @ (Const _)) =
+simplifySum n1@(Const _) (Sum x n2@(Const _)) =
   Sum x (Sum n1 n2)
 
-simplifySum (Sum n1 @ (Const _) x) n2 @ (Const _) =
+simplifySum (Sum n1@(Const _) x) n2@(Const _) =
   Sum x (Sum n1 n2)
 
-simplifySum (Sum x n1 @ (Const _)) n2 @ (Const _) =
+simplifySum (Sum x n1@(Const _)) n2@(Const _) =
   Sum x (Sum n1 n2)
 
 
 -- Simplify sum of variables
-simplifySum n1 @ (Var _) (Sum n2 @ (Var _) x) =
+simplifySum n1@(Var _) (Sum n2@(Var _) x) =
   Sum x (Sum n1 n2)
 
-simplifySum n1 @ (Var _) (Sum x n2 @ (Var _)) =
+simplifySum n1@(Var _) (Sum x n2@(Var _)) =
   Sum x (Sum n1 n2)
 
-simplifySum (Sum n1 @ (Var _) x) n2 @ (Var _) =
+simplifySum (Sum n1@(Var _) x) n2@(Var _) =
   Sum x (Sum n1 n2)
 
-simplifySum (Sum x n1 @ (Var _)) n2 @ (Var _) =
+simplifySum (Sum x n1@(Var _)) n2@(Var _) =
   Sum x (Sum n1 n2)
 
 simplifySum x1 x2 = Sum x1 x2
@@ -107,30 +107,30 @@ simplifyProduct x1 x2
 
 
 -- Simplify product of constants
-simplifyProduct n1 @ (Const _) (Product n2 @ (Const _) x) =
+simplifyProduct n1@(Const _) (Product n2@(Const _) x) =
   Product x (Product n1 n2)
 
-simplifyProduct n1 @ (Const _) (Product x n2 @ (Const _)) =
+simplifyProduct n1@(Const _) (Product x n2@(Const _)) =
   Product x (Product n1 n2)
 
-simplifyProduct (Product n1 @ (Const _) x) n2 @ (Const _) =
+simplifyProduct (Product n1@(Const _) x) n2@(Const _) =
   Product x (Product n1 n2)
 
-simplifyProduct (Product x n1 @ (Const _)) n2 @ (Const _) =
+simplifyProduct (Product x n1@(Const _)) n2@(Const _) =
   Product x (Product n1 n2)
 
 
 -- Simplify product of variables
-simplifyProduct n1 @ (Var _) (Product n2 @ (Var _) x) =
+simplifyProduct n1@(Var _) (Product n2@(Var _) x) =
   Product x (Product n1 n2)
 
-simplifyProduct n1 @ (Var _) (Product x n2 @ (Var _)) =
+simplifyProduct n1@(Var _) (Product x n2@(Var _)) =
   Product x (Product n1 n2)
 
-simplifyProduct (Product n1 @ (Var _) x) n2 @ (Var _) =
+simplifyProduct (Product n1@(Var _) x) n2@(Var _) =
   Product x (Product n1 n2)
 
-simplifyProduct (Product x n1 @ (Var _)) n2 @ (Var _) =
+simplifyProduct (Product x n1@(Var _)) n2@(Var _) =
   Product x (Product n1 n2)
 
 simplifyProduct x1 x2 = Product x1 x2
@@ -139,7 +139,7 @@ simplifyProduct x1 x2 = Product x1 x2
 
 simplifyExp :: AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression
 
-simplifyExp (Const 1) x = Const 1
+simplifyExp (Const 1) _ = Const 1
 simplifyExp x (Const 1) = x
 simplifyExp (Const 0) _ = Const 0
 simplifyExp _ (Const 0) = Const 1
@@ -148,13 +148,13 @@ simplifyExp (Const n1) (Const n2) = Const result  where
   result      = approxRational (toDecimal n1 ** toDecimal n2) 0.00001
   toDecimal n = rationalToDouble (numerator n) (denominator n)
 
-simplifyExp n1 @ (Const _) (Exp x n2 @ (Const _)) =
+simplifyExp n1@(Const _) (Exp x n2@(Const _)) =
   Exp x (Exp n1 n2)
 
-simplifyExp (Exp x n1 @ (Const _)) n2 @ (Const _) =
+simplifyExp (Exp x n1@(Const _)) n2@(Const _) =
   Exp x (Exp n1 n2)
 
-simplifyExp (Exp x n1 @ (Var _)) n2 @ (Var _) =
+simplifyExp (Exp x n1@(Var _)) n2@(Var _) =
   Exp x (Exp n1 n2)
 
 simplifyExp (Exp x1 y1) x2 =

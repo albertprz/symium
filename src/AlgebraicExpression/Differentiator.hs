@@ -8,7 +8,7 @@ import AlgebraicExpression.Operations (sine, cosine, (|+|), (|*|), (|^|))
 diff :: String -> AlgebraicExpression -> AlgebraicExpression
 
 
-diff diffVars (Const _) = Const 0
+diff _ (Const _) = Const 0
 
 
 diff diffVars (Var ch)
