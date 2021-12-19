@@ -72,6 +72,10 @@ library
 executable symium-exe
   main-is: Main.hs
   other-modules:
+      CommandLine.Command
+      CommandLine.Helpers
+      CommandLine.Message
+      CommandLine.Parsers
       Paths_symium
   hs-source-dirs:
       app
