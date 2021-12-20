@@ -32,7 +32,7 @@ parseCommand input = applyParser fullCommandParser where
   commandOptsParser = is "--" *> (NoSimplify <$ is "noSimplify")
 
 
-parseVariables :: String -> Either ParseError [Char]
+parseVariables :: String -> Either ParseError String
 parseVariables = runParser (csvParser lower)
 
 

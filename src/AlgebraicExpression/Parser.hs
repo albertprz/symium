@@ -5,14 +5,13 @@ import AlgebraicExpression.Operations (expn, divide, multiply, substract, add)
 
 import Parser (Parser, check)
 import ParserCombinators (IsMatch(..), maybeWithin, (<|>), (|*), (|?))
-import Parsers.Char (lower, dash, whiteSpace)
+import Parsers.Char (lower, whiteSpace)
 import Parsers.String (spacing, withinParens)
 import Parsers.Number (double)
 
 import Data.Ratio (approxRational)
 import Data.Maybe (maybeToList)
 import Data.List (foldl1')
-
 
 
 expression :: Parser AlgebraicExpression
@@ -27,10 +26,12 @@ element :: Parser AlgebraicExpression
 element = foldl1' multiply . uncurry (++) <$> nonEmptyElemParser where
 
   nonEmptyElemParser = check "not empty" (not . null . snd) elemParser
-  elemParser = do sign <- fmap (const $ Const $ -1) <$> (dash |?)
-                  c <- (constant |?)
-                  v <- (var |*)
-                  pure (maybeToList sign, maybeToList c ++ v)
+
+  elemParser = do sign <- fmap (const $ Const $ -1) <$> (is '-' |?)
+                  ct <- (constant |?)
+                  vars <- (((,) <$> var <*> ((is '^' *> constant) |?)) |*)
+                  let varsWithExp = (\(x, y) -> maybe x (expn x) y) <$> vars
+                  pure (maybeToList sign, maybeToList ct ++ varsWithExp)
 
 
 operation :: (AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression) ->

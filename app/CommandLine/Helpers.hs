@@ -1,6 +1,6 @@
 module CommandLine.Helpers where
 
-import CommandLine.Message (inputMessage, parsingErrorMessage)
+import CommandLine.Message (inputMessage, parsingErrorMessage, CustomPrompt (Expression), CustomPromptMessage (description, promptEntry), promptMessage)
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
 import AlgebraicExpression.Parser (expression)
 import AlgebraicExpression.Printer (showExpression)
@@ -10,30 +10,37 @@ import Parser (ParseError, runParser)
 import System.IO (hFlush, stdout)
 
 
+
 actionPrompt :: (a -> AlgebraicExpression -> AlgebraicExpression)
                 -> (String -> Either ParseError a)
-                -> (String, String)
+                -> CustomPrompt
                 -> IO ()
-actionPrompt action parser (name, promptMsg) =
+actionPrompt action parser customPrompt =
 
-  do writeToPrompt [inputMessage name, promptMsg]
+  do writePromptMessage msg
      result <- parser <$> getLine
      either errorOp successOp result where
 
-    errorOp _ = putStrLn (parsingErrorMessage name) *>
-                  actionPrompt action parser (name, promptMsg)
+    msg = promptMessage customPrompt
+    errorOp _ = putStrLn (parsingErrorMessage msg) *>
+                  actionPrompt action parser customPrompt
     successOp x = simpleActionPrompt (action x)
 
 
 
+
 simpleActionPrompt :: (AlgebraicExpression -> AlgebraicExpression) -> IO ()
-simpleActionPrompt action = do writeToPrompt ["Input algebraic expression:",
-                                              "Expression >> "]
+simpleActionPrompt action = do writePromptMessage msg
                                expr <- runParser expression <$> getLine
                                putStrLn $ either showError showResult expr  where
 
+  msg = promptMessage Expression
   showResult = ("Result:  " ++) . showExpression . action
-  showError = const $ parsingErrorMessage "algebraic expression"
+  showError = const $ parsingErrorMessage msg
+
+
+writePromptMessage :: CustomPromptMessage -> IO ()
+writePromptMessage msg = writeToPrompt [inputMessage $ description msg, promptEntry msg]
 
 
 writeToPrompt :: [String] -> IO ()

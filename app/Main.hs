@@ -1,5 +1,6 @@
 import CommandLine.Command(Command(..), CommandOpts(..))
-import CommandLine.Message(unknownCommandMessage, helpMessage)
+import CommandLine.Message(unknownCommandMessage, helpMessage,
+                           CustomPrompt (DiffVars, SubstitutionExprs))
 import CommandLine.Helpers(actionPrompt, simpleActionPrompt, writeToPrompt)
 import CommandLine.Parsers(parseCommand, parseVariables, parseExprMap)
 
@@ -24,14 +25,8 @@ execute Other _    = putStrLn unknownCommandMessage
 execute Help _     = putStrLn helpMessage
 execute Exit _     = exitSuccess
 execute Simplify _ = simpleActionPrompt simplify
-
-execute Diff opts = actionPrompt (applyAction diff opts)
-                                 parseVariables
-                                 ("diff variables", "Vars >> ")
-
-execute Eval opts = actionPrompt (applyAction eval opts)
-                                 parseExprMap
-                                 ("substitution expressions", "Exprs >> ")
+execute Diff opts = actionPrompt (applyAction diff opts) parseVariables DiffVars
+execute Eval opts = actionPrompt (applyAction eval opts) parseExprMap   SubstitutionExprs
 
 
 

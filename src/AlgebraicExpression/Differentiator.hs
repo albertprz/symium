@@ -13,7 +13,7 @@ diff _ (Const _) = Const 0
 
 diff diffVars (Var ch)
   | ch `elem` diffVars = Const 1
-  | otherwise      = Var ch
+  | otherwise          = Const 0
 
 
 diff diffVars (Exp x n) = n |*| diff diffVars x |*| (x |^| (n |+| Const (-1)))
