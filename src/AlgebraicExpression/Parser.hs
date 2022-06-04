@@ -4,7 +4,7 @@ import AlgebraicExpression.Operations (add, divide, expn, multiply, substract)
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
 import Parser            (Parser, check)
-import ParserCombinators (IsMatch (..), maybeWithin, (<|>), (|*), (|?))
+import ParserCombinators (IsMatch (..), maybeWithin, sepByOp, (<|>), (|*), (|?))
 import Parsers.Char      (lower, whiteSpace)
 import Parsers.Number    (double)
 import Parsers.String    (spacing, withinParens)
@@ -23,7 +23,8 @@ allOperations = sumExpr <|> differenceExpr <|> productExpr <|> divisionExpr <|> 
 
 
 element :: Parser AlgebraicExpression
-element = foldl1' multiply . uncurry (++) <$> nonEmptyElemParser where
+element = foldl1' multiply . uncurry (++) <$> nonEmptyElemParser
+  where
 
   nonEmptyElemParser = check "not empty" (not . null . snd) elemParser
 
@@ -37,15 +38,12 @@ element = foldl1' multiply . uncurry (++) <$> nonEmptyElemParser where
 operation :: (AlgebraicExpression -> AlgebraicExpression -> AlgebraicExpression) ->
               Char -> Parser AlgebraicExpression -> Parser AlgebraicExpression
 
-operation ctor operator operandParser = foldl1' ctor <$> operationsParser where
+operation ctor operator operandParser = foldl1' ctor <$> operationsParser
+  where
 
   operand = maybeWithin spacing operandParser
 
-  operationsParser = do x1 <- operand
-                        is operator
-                        x2 <- operand
-                        xs <- ((is operator *> operand) |*)
-                        pure $ [x1, x2] ++ xs
+  operationsParser = snd <$> sepByOp (is operator) operand
 
 
 constant :: Parser AlgebraicExpression

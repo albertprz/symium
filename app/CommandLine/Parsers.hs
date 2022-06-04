@@ -3,9 +3,10 @@ module CommandLine.Parsers where
 import AlgebraicExpression.Parser     (expression)
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
 import CommandLine.Command            (Command (..), CommandOpts (..))
-import ParserCombinators              (IsMatch (..), maybeWithin, (<|>), (|*))
+import ParserCombinators              (IsMatch (..), anySepBy, maybeWithin,
+                                       (<|>), (|*))
 
-import Parser         (ParseError, Parser, runParser)
+import Parser         (ParseError, runParser)
 import Parsers.Char   (comma, equal, lower)
 import Parsers.String (spacing)
 
@@ -33,18 +34,12 @@ parseCommand input = applyParser fullCommandParser where
 
 
 parseVariables :: String -> Either ParseError String
-parseVariables = runParser (csvParser lower)
+parseVariables = runParser (anySepBy comma lower)
 
 
 parseExprMap :: String -> Either ParseError (Map Char AlgebraicExpression)
 parseExprMap input = Map.fromList <$> runParser exprMapParser input where
 
-  exprMapParser = csvParser elementParser
+  exprMapParser = anySepBy comma elementParser
   elementParser = (,) <$> (lower <* maybeWithin spacing equal)
                       <*> expression
-
-
-csvParser :: Parser b -> Parser [b]
-csvParser element = maybeWithin spacing
-                      ((:) <$> element <*>
-                      ((maybeWithin spacing comma *> element) |*))
