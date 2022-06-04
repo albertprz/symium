@@ -1,6 +1,7 @@
 module AlgebraicExpression.Sorter (sort, sortOnce) where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..), BinaryOperation(..))
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..),
+                                       BinaryOperation (..))
 
 
 sort :: AlgebraicExpression -> AlgebraicExpression

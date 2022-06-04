@@ -1,11 +1,11 @@
 module AlgebraicExpression.Evaluator where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
 import AlgebraicExpression.Operations (mapExpr)
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
-import Data.Map(Map)
-import Data.Maybe(fromMaybe)
-import qualified Data.Map as Map
+import           Data.Map   (Map)
+import qualified Data.Map   as Map
+import           Data.Maybe (fromMaybe)
 
 
 

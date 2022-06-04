@@ -1,15 +1,15 @@
-import CommandLine.Command(Command(..), CommandOpts(..))
-import CommandLine.Message(unknownCommandMessage, helpMessage,
-                           CustomPrompt (DiffVars, SubstitutionExprs))
-import CommandLine.Helpers(actionPrompt, simpleActionPrompt, writeToPrompt)
-import CommandLine.Parsers(parseCommand, parseVariables, parseExprMap)
+import CommandLine.Command (Command (..), CommandOpts (..))
+import CommandLine.Helpers (actionPrompt, simpleActionPrompt, writeToPrompt)
+import CommandLine.Message (CustomPrompt (DiffVars, SubstitutionExprs),
+                            helpMessage, unknownCommandMessage)
+import CommandLine.Parsers (parseCommand, parseExprMap, parseVariables)
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
-import AlgebraicExpression.Simplifier (simplify)
 import AlgebraicExpression.Differentiator (diff)
-import AlgebraicExpression.Evaluator (eval)
+import AlgebraicExpression.Evaluator      (eval)
+import AlgebraicExpression.Simplifier     (simplify)
+import AlgebraicExpression.SyntaxTree     (AlgebraicExpression)
 
-import System.Exit(exitSuccess)
+import System.Exit (exitSuccess)
 
 
 

@@ -1,6 +1,6 @@
 module AlgebraicExpression.Operations where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
 import Data.Ratio ((%))
 

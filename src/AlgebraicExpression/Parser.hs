@@ -1,17 +1,17 @@
 module AlgebraicExpression.Parser (expression) where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
-import AlgebraicExpression.Operations (expn, divide, multiply, substract, add)
+import AlgebraicExpression.Operations (add, divide, expn, multiply, substract)
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
-import Parser (Parser, check)
-import ParserCombinators (IsMatch(..), maybeWithin, (<|>), (|*), (|?))
-import Parsers.Char (lower, whiteSpace)
-import Parsers.String (spacing, withinParens)
-import Parsers.Number (double)
+import Parser            (Parser, check)
+import ParserCombinators (IsMatch (..), maybeWithin, (<|>), (|*), (|?))
+import Parsers.Char      (lower, whiteSpace)
+import Parsers.Number    (double)
+import Parsers.String    (spacing, withinParens)
 
-import Data.Ratio (approxRational)
+import Data.List  (foldl1')
 import Data.Maybe (maybeToList)
-import Data.List (foldl1')
+import Data.Ratio (approxRational)
 
 
 expression :: Parser AlgebraicExpression
@@ -70,7 +70,7 @@ differenceExpr = operation substract '-'
 
 
 productExpr :: Parser AlgebraicExpression
-productExpr = operation multiply  '*'
+productExpr = operation multiply '*'
               (withinParens allOperations <|> divisionExpr <|>
                expnExpr <|> element)
 

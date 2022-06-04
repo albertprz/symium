@@ -1,6 +1,6 @@
 module AlgebraicExpression.Printer (showExpression) where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
 import Data.Ratio (denominator, numerator)
 

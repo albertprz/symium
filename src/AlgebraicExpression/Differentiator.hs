@@ -1,7 +1,7 @@
 module AlgebraicExpression.Differentiator(diff) where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
-import AlgebraicExpression.Operations (sine, cosine, (|+|), (|*|), (|^|))
+import AlgebraicExpression.Operations (cosine, sine, (|*|), (|+|), (|^|))
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
 
 

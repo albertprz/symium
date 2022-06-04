@@ -1,17 +1,17 @@
 module CommandLine.Parsers where
 
-import CommandLine.Command(Command(..), CommandOpts(..))
+import AlgebraicExpression.Parser     (expression)
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
-import AlgebraicExpression.Parser (expression)
-import ParserCombinators (IsMatch(..), maybeWithin, (<|>), (|*))
+import CommandLine.Command            (Command (..), CommandOpts (..))
+import ParserCombinators              (IsMatch (..), maybeWithin, (<|>), (|*))
 
-import Parser (Parser, runParser, ParseError)
-import Parsers.Char (lower, comma, equal)
+import Parser         (ParseError, Parser, runParser)
+import Parsers.Char   (comma, equal, lower)
 import Parsers.String (spacing)
 
-import qualified Data.Map as Map
-import Data.Map(Map)
-import Data.Either (fromRight)
+import           Data.Either (fromRight)
+import           Data.Map    (Map)
+import qualified Data.Map    as Map
 
 
 parseCommand :: String -> (Command, [CommandOpts])

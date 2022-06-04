@@ -1,10 +1,10 @@
 module AlgebraicExpression.Simplifier (simplify, simplifyOnce) where
 
-import AlgebraicExpression.SyntaxTree (AlgebraicExpression(..))
-import AlgebraicExpression.Sorter (sort, sortOnce)
+import AlgebraicExpression.Sorter     (sort, sortOnce)
+import AlgebraicExpression.SyntaxTree (AlgebraicExpression (..))
 
-import Data.Ratio (denominator, numerator, approxRational)
-import GHC.Float (rationalToDouble)
+import Data.Ratio (approxRational, denominator, numerator)
+import GHC.Float  (rationalToDouble)
 
 
 

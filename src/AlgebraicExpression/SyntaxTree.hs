@@ -1,18 +1,25 @@
 module AlgebraicExpression.SyntaxTree where
 
 
-data AlgebraicExpression = Const Rational |
-                           Var Char |
-                           Sum AlgebraicExpression AlgebraicExpression |
-                           Product AlgebraicExpression AlgebraicExpression |
-                           Exp AlgebraicExpression AlgebraicExpression |
-                           Sin AlgebraicExpression |
-                           Cos AlgebraicExpression |
-                           Tan AlgebraicExpression
+data AlgebraicExpression
+  = Const Rational
+  | Var Char
+  | Sum AlgebraicExpression AlgebraicExpression
+  | Product AlgebraicExpression AlgebraicExpression
+  | Exp AlgebraicExpression AlgebraicExpression
+  | Sin AlgebraicExpression
+  | Cos AlgebraicExpression
+  | Tan AlgebraicExpression
 
 
-data BinaryOperation = Addition | Multiplication | Power
-data UnaryOperation  = Sine | Cosine | Tangent
+data BinaryOperation
+  = Addition
+  | Multiplication
+  | Power
+data UnaryOperation
+  = Sine
+  | Cosine
+  | Tangent
 
 
 

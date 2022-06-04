@@ -1,7 +1,14 @@
 module CommandLine.Command where
 
-data Command = Simplify | Eval | Diff | Help | Exit | Other
+data Command
+  = Simplify
+  | Eval
+  | Diff
+  | Help
+  | Exit
+  | Other
   deriving (Eq, Show)
 
-data CommandOpts = NoSimplify
+data CommandOpts
+  = NoSimplify
   deriving (Eq, Show)

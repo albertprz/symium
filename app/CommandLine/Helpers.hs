@@ -1,9 +1,12 @@
 module CommandLine.Helpers where
 
-import CommandLine.Message (inputMessage, parsingErrorMessage, CustomPrompt (Expression), CustomPromptMessage (description, promptEntry), promptMessage)
+import AlgebraicExpression.Parser     (expression)
+import AlgebraicExpression.Printer    (showExpression)
 import AlgebraicExpression.SyntaxTree (AlgebraicExpression)
-import AlgebraicExpression.Parser (expression)
-import AlgebraicExpression.Printer (showExpression)
+import CommandLine.Message            (CustomPrompt (Expression),
+                                       CustomPromptMessage (description, promptEntry),
+                                       inputMessage, parsingErrorMessage,
+                                       promptMessage)
 
 import Parser (ParseError, runParser)
 

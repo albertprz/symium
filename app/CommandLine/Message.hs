@@ -1,6 +1,6 @@
 module CommandLine.Message where
 
-import Data.List(intercalate)
+import Data.List (intercalate)
 
 
 availableCommandsMessage :: String
@@ -10,11 +10,17 @@ availableOptsMessage :: String
 availableOptsMessage = showSequence $ ("--" ++) <$> ["noSimplify"]
 
 
-data CustomPrompt = Expression | DiffVars | SubstitutionExprs
+data CustomPrompt
+  = Expression
+  | DiffVars
+  | SubstitutionExprs
 
-data CustomPromptMessage = CustomPromptMessage {description :: String,
-                                                example :: String,
-                                                promptEntry :: String}
+data CustomPromptMessage
+  = CustomPromptMessage
+      { description :: String
+      , example     :: String
+      , promptEntry :: String
+      }
 
 promptMessage :: CustomPrompt -> CustomPromptMessage
 promptMessage Expression        = CustomPromptMessage "algebraic expression"
